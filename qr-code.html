@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code - EPAM APAC Wellness Week 2026</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Space+Grotesk:wght@400;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #141b2d;
+            --accent: #00d4ff;
+            --accent-secondary: #ff6b6b;
+            --text-primary: #ffffff;
+            --text-secondary: #8b92a8;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated gradient background */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 30% 50%, rgba(0, 212, 255, 0.15) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 50%, rgba(255, 107, 107, 0.15) 0%, transparent 50%),
+                        radial-gradient(ellipse at 50% 80%, rgba(138, 43, 226, 0.1) 0%, transparent 50%);
+            animation: gradientMove 20s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes gradientMove {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(-2%, -2%) scale(1.05); }
+            66% { transform: translate(2%, 2%) scale(0.95); }
+        }
+
+        /* Grid pattern overlay */
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+        }
+
+        .container {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            padding: 60px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), var(--accent-secondary), transparent);
+        }
+
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .url-input-wrapper {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        #urlInput {
+            flex: 1;
+            background: var(--bg-secondary);
+            border: 2px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 16px 20px;
+            color: var(--text-primary);
+            font-family: 'Space Grotesk', monospace;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        #urlInput:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+
+        #urlInput::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            border: none;
+            border-radius: 16px;
+            padding: 16px 28px;
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+
+        .qr-wrapper {
+            background: white;
+            border-radius: 24px;
+            padding: 30px;
+            display: inline-block;
+            margin: 0 auto 30px;
+            display: flex;
+            justify-content: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        #qrcode {
+            display: inline-block;
+        }
+
+        #qrcode img,
+        #qrcode canvas {
+            display: block;
+            max-width: 100%;
+        }
+
+        .url-display {
+            background: var(--bg-secondary);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 30px;
+            word-break: break-all;
+        }
+
+        .url-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .url-text {
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-family: 'Space Grotesk', monospace;
+            font-weight: 400;
+        }
+
+        .event-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 107, 107, 0.1));
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 100px;
+            padding: 10px 20px;
+            margin: 20px auto 0;
+            display: flex;
+            justify-content: center;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .event-badge .icon {
+            font-size: 1.2rem;
+        }
+
+        .event-badge span {
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            font-weight: 400;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            border: none;
+            border-radius: 100px;
+            padding: 14px 32px;
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 30px;
+            display: block;
+            width: 100%;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .download-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.4);
+        }
+
+        .download-btn:hover::before {
+            left: 100%;
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 40px 30px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 QR Code Generator</h1>
+        <p class="subtitle">Enter a URL to generate QR code</p>
+        
+        <div class="url-input-wrapper">
+            <input 
+                type="text" 
+                id="urlInput" 
+                placeholder="Paste your URL here..." 
+                value="https://wearecommunity.io/events/epam-apac-wellness-week-2026"
+                oninput="generateQR()"
+            />
+            <button class="generate-btn" onclick="generateQR()">
+                Generate
+            </button>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <div class="qr-wrapper">
+                <div id="qrcode"></div>
+            </div>
+        </div>
+
+        <div class="url-display" id="urlDisplay">
+            <div class="url-label">Current URL</div>
+            <div class="url-text" id="urlText">https://wearecommunity.io/events/epam-apac-wellness-week-2026</div>
+        </div>
+
+        <button class="download-btn" onclick="downloadQR()">
+            ⬇ Download QR Code
+        </button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        const urlInput = document.getElementById('urlInput');
+        const urlText = document.getElementById('urlText');
+        const qrContainer = document.getElementById('qrcode');
+        let qrCode = null;
+
+        // Generate QR code
+        function generateQR() {
+            const url = urlInput.value.trim();
+            if (!url) return;
+            
+            urlText.textContent = url;
+            
+            // Clear the container
+            qrContainer.innerHTML = '';
+            
+            // Generate new QR code using qrcodejs library
+            try {
+                qrCode = new QRCode(qrContainer, {
+                    text: url,
+                    width: 280,
+                    height: 280,
+                    colorDark: "#0a0e1a",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            } catch (error) {
+                console.error('QR generation error:', error);
+            }
+        }
+
+        // Download function
+        function downloadQR() {
+            const qrCanvas = qrContainer.querySelector('canvas');
+            if (!qrCanvas) {
+                alert('Please generate a QR code first!');
+                return;
+            }
+            const link = document.createElement('a');
+            link.download = 'qrcode.png';
+            link.href = qrCanvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // Initial generation on page load
+        window.addEventListener('load', function() {
+            setTimeout(generateQR, 100);
+        });
+    </script>
+</body>
+</html>
